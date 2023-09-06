@@ -1,4 +1,4 @@
-import { DataState } from "../enum/datastate";
+import { DataState } from "../enum/datastate.enum";
 
 export interface LoginState {
     dataState: DataState;

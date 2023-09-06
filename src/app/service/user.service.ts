@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http'
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http'
 import { Observable, catchError, tap, throwError } from 'rxjs';
 import { CustomHttpResponse } from '../interface/custom-http-resposne';
 import { Profile } from '../interface/profile';
@@ -22,6 +22,13 @@ export class UserService {
 
   verifyCode$ = (email: string, code: string) => <Observable<CustomHttpResponse<Profile>>>
     this.http.get<CustomHttpResponse<Profile>>(`${this.server}/user/verify/code/${email}/${code}`)
+      .pipe(
+        tap(console.log),
+        catchError(this.handleError)
+      );
+
+  profile$ = () => <Observable<CustomHttpResponse<Profile>>>
+    this.http.get<CustomHttpResponse<Profile>>(`${this.server}/user/profile`)
       .pipe(
         tap(console.log),
         catchError(this.handleError)

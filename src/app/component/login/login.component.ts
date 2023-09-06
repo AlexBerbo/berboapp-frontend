@@ -2,8 +2,8 @@ import { Component } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, catchError, map, of, startWith } from 'rxjs';
-import { DataState } from 'src/app/enum/datastate';
-import { Key } from 'src/app/enum/key';
+import { DataState } from 'src/app/enum/datastate.enum';
+import { Key } from 'src/app/enum/key.enum';
 import { LoginState } from 'src/app/interface/appstate';
 import { UserService } from 'src/app/service/user.service';
 
