@@ -3,6 +3,7 @@ import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http
 import { Observable, catchError, tap, throwError } from 'rxjs';
 import { CustomHttpResponse } from '../interface/custom-http-resposne';
 import { Profile } from '../interface/profile';
+import { User } from '../interface/user';
 
 @Injectable({
   providedIn: 'root'
@@ -29,6 +30,13 @@ export class UserService {
 
   profile$ = () => <Observable<CustomHttpResponse<Profile>>>
     this.http.get<CustomHttpResponse<Profile>>(`${this.server}/user/profile`)
+      .pipe(
+        tap(console.log),
+        catchError(this.handleError)
+      );
+
+  update$ = (user: User) => <Observable<CustomHttpResponse<Profile>>>
+    this.http.patch<CustomHttpResponse<Profile>>(`${this.server}/user/update`, user)
       .pipe(
         tap(console.log),
         catchError(this.handleError)
