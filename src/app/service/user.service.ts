@@ -83,6 +83,14 @@ export class UserService {
         catchError(this.handleError)
       );
 
+      
+  updateImage$ = (formData: FormData) => <Observable<CustomHttpResponse<Profile>>>
+  this.http.patch<CustomHttpResponse<Profile>>(`${this.server}/user/update-image`, formData)
+    .pipe(
+      tap(console.log),
+      catchError(this.handleError)
+    );
+
   handleError(error: HttpErrorResponse): Observable<never> {
     let errorMessage: string;
     if (error.error instanceof ErrorEvent) {
