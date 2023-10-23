@@ -10,7 +10,6 @@ import { Key } from '../enum/key.enum';
   providedIn: 'root'
 })
 export class UserService {
-
   constructor(private http: HttpClient) { }
 
   private server: string = 'http://localhost:8080';
@@ -44,7 +43,7 @@ export class UserService {
       );
 
   refreshToken$ = () => <Observable<CustomHttpResponse<Profile>>>
-    this.http.get<CustomHttpResponse<Profile>>(`${this.server}/user/refresh/token`, { headers: { Authorization: `Bearer ${localStorage.getItem(Key.REFRESH_TOKEN)}` }})
+    this.http.get<CustomHttpResponse<Profile>>(`${this.server}/user/refresh/token`, { headers: { Authorization: `Bearer ${localStorage.getItem(Key.REFRESH_TOKEN)}` } })
       .pipe(
         tap(response => {
           console.log(response);
@@ -56,6 +55,34 @@ export class UserService {
         catchError(this.handleError)
       );
 
+  updatePassword$ = (form: { currentPassword: string, newPassword: string, confirmPassword: string }) => <Observable<CustomHttpResponse<Profile>>>
+    this.http.patch<CustomHttpResponse<Profile>>(`${this.server}/user/update-password`, form)
+      .pipe(
+        tap(console.log),
+        catchError(this.handleError)
+      );
+
+  updateRole$ = (roleName: string) => <Observable<CustomHttpResponse<Profile>>>
+    this.http.patch<CustomHttpResponse<Profile>>(`${this.server}/user/update-role/${roleName}`, {})
+      .pipe(
+        tap(console.log),
+        catchError(this.handleError)
+      );
+
+  updateSettings$ = (form: { enabled: boolean, notLocked: boolean }) => <Observable<CustomHttpResponse<Profile>>>
+    this.http.patch<CustomHttpResponse<Profile>>(`${this.server}/user/update-settings`, form)
+      .pipe(
+        tap(console.log),
+        catchError(this.handleError)
+      );
+
+  updateMfa$ = () => <Observable<CustomHttpResponse<Profile>>>
+    this.http.patch<CustomHttpResponse<Profile>>(`${this.server}/user/update-mfa`, {})
+      .pipe(
+        tap(console.log),
+        catchError(this.handleError)
+      );
+
   handleError(error: HttpErrorResponse): Observable<never> {
     let errorMessage: string;
     if (error.error instanceof ErrorEvent) {
@@ -63,7 +90,7 @@ export class UserService {
     } else {
       if (error.error.reason) {
         errorMessage = error.error.reason;
-        console.log(error);
+        console.log(errorMessage);
       } else {
         errorMessage = `An error occurred, error - ${error.status}`;
       }
