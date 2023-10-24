@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Observable, BehaviorSubject, map, of, startWith, catchError } from 'rxjs';
 import { DataState } from 'src/app/enum/datastate.enum';
+import { EventType } from 'src/app/enum/event-type.enum';
+import { Role } from 'src/app/enum/role.enum';
 import { CustomHttpResponse } from 'src/app/interface/custom-http-resposne';
 import { Profile } from 'src/app/interface/profile';
 import { State } from 'src/app/interface/state';
@@ -18,7 +20,11 @@ export class ProfileComponent implements OnInit {
   private dataSubject = new BehaviorSubject<CustomHttpResponse<Profile>>(null);
   private isLoadingSubject = new BehaviorSubject<boolean>(false);
   isLoading$ = this.isLoadingSubject.asObservable();
+  private showLogsSubject = new BehaviorSubject<boolean>(false);
+  showLogs$ = this.showLogsSubject.asObservable();
   readonly DataState = DataState;
+  readonly Role = Role;
+  readonly EventType = EventType;
 
   constructor(private userService: UserService) { }
 
@@ -59,6 +65,7 @@ export class ProfileComponent implements OnInit {
           map(response => {
             console.log(response);
             passwordForm.reset();
+            this.dataSubject.next({ ...response, data: response.data });
             this.isLoadingSubject.next(false);
             return { dataState: DataState.LOADED, appData: this.dataSubject.value }
           }),
@@ -128,9 +135,12 @@ export class ProfileComponent implements OnInit {
       this.isLoadingSubject.next(true);
       this.profileState$ = this.userService.updateImage$(this.getFormData(image)).pipe(map(response => {
         console.log(response);
-        this.dataSubject.next({ ...response, 
-          data: { ...response.data ,
-          user: { ...response.data.user, imageUrl: `${response.data.user.imageUrl}?time=${new Date().getTime()}` }}}); // Copy what we had, and then add the new data
+        this.dataSubject.next({
+          ...response,
+          data: { ...response.data,
+          user: { ...response.data.user, imageUrl: `${response.data.user.imageUrl}?time=${new Date().getTime()}` }
+          }
+        }); // Copy what we had, and then add the new data
         this.isLoadingSubject.next(false);
         return { dataState: DataState.LOADED, appData: this.dataSubject.value }
       }),
@@ -143,7 +153,11 @@ export class ProfileComponent implements OnInit {
     }
   }
 
-  getFormData(image: File): FormData {
+  toggleActivities() {
+    this.showLogsSubject.next(!this.showLogsSubject.value);
+  }
+
+  private getFormData(image: File): FormData {
     const formData = new FormData()
     formData.append('image', image);
     return formData;
