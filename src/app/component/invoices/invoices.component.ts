@@ -2,39 +2,35 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, BehaviorSubject, map, startWith, catchError, of } from 'rxjs';
 import { DataState } from 'src/app/enum/datastate.enum';
-import { Role } from 'src/app/enum/role.enum';
 import { CustomHttpResponse, Page } from 'src/app/interface/custom-http-resposne';
-import { Customer } from 'src/app/interface/customer';
+import { Invoice } from 'src/app/interface/invoice';
 import { State } from 'src/app/interface/state';
-import { Stats } from 'src/app/interface/stats';
 import { User } from 'src/app/interface/user';
-import { CustomerService } from 'src/app/service/customer.service';
-import { UserService } from 'src/app/service/user.service';
+import { InvoiceService } from 'src/app/service/invoice.service';
 
 @Component({
-  selector: 'app-home',
-  templateUrl: './home.component.html',
-  styleUrls: ['./home.component.css']
+  selector: 'app-invoices',
+  templateUrl: './invoices.component.html',
+  styleUrls: ['./invoices.component.css']
 })
-export class HomeComponent implements OnInit {
-  homeState$: Observable<State<CustomHttpResponse<Page<Customer> & User & Stats>>>;
-  private dataSubject = new BehaviorSubject<CustomHttpResponse<Page<Customer> & User & Stats>>(null);
+export class InvoicesComponent implements OnInit {
+  invoiceState$: Observable<State<CustomHttpResponse<Page<Invoice>  & User>>>;
+  private dataSubject = new BehaviorSubject<CustomHttpResponse<Page<Invoice> & User>>(null);
   private isLoadingSubject = new BehaviorSubject<boolean>(false);
   isLoading$ = this.isLoadingSubject.asObservable();
-  private showLogsSubject = new BehaviorSubject<boolean>(false);
-  showLogs$ = this.showLogsSubject.asObservable();
   private currentPageSubject = new BehaviorSubject<number>(0);
   currentPage$ = this.currentPageSubject.asObservable();
   readonly DataState = DataState;
-  readonly Role = Role;
 
-  constructor(private router: Router, private customerService: CustomerService) { }
+  constructor(private router: Router, private invoiceService: InvoiceService) { }
 
   ngOnInit(): void {
-    this.homeState$ = this.customerService.customers$().pipe(map(response => {
-      console.log(response);
-      this.dataSubject.next(response);
-      return { dataState: DataState.LOADED, appData: response }
+    this.invoiceState$ = this.invoiceService.getInvoices$()
+    .pipe(
+      map(response => {
+        console.log(response);
+        this.dataSubject.next(response);
+        return { dataState: DataState.LOADED, appData: response }
     }),
       startWith({ dataState: DataState.LOADING }),
       catchError((error: string) => {
@@ -44,7 +40,7 @@ export class HomeComponent implements OnInit {
   }
 
   goToPage(pageNumber?: number): void {
-    this.homeState$ = this.customerService.customers$(pageNumber).pipe(
+    this.invoiceState$ = this.invoiceService.getInvoices$(pageNumber).pipe(
       map(response => {
         console.log(response);
         this.dataSubject.next(response);
@@ -62,7 +58,7 @@ export class HomeComponent implements OnInit {
     this.goToPage(direction === 'forwards' ? this.currentPageSubject.value + 1 : this.currentPageSubject.value - 1);
   }
 
-  selectedCustomer(customer: Customer): void {
-    this.router.navigate([`/customer/${customer.id}`]);
+  selectedInvoice(invoice: Invoice): void {
+    this.router.navigate([`invoice/${invoice.id}`]);
   }
 }

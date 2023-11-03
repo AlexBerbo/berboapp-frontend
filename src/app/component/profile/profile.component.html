@@ -283,7 +283,7 @@
                                   </td>
                                   <td>{{ event.description }}</td>
                                   <td>
-                                     <button type="button" class="btn btn-sm" style="background-color: #fd5d0d; font-weight: 450;">Report</button>
+                                     <button type="button" [routerLink]="['/report', event.id]" class="btn btn-sm" style="background-color: #fd5d0d; font-weight: 450;">Report</button>
                                   </td>
                                </tr>
                             </tbody>

@@ -9,12 +9,18 @@ import { VerifyComponent } from './component/verify/verify.component';
 import { ResetPasswordComponent } from './component/reset-password/reset-password.component';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
-import { CustomersComponent } from './component/customer/customer.component';
+import { CustomerComponent } from './component/customer/customer.component';
+import { CustomersComponent } from './component/customers/customers.component';
 import { ProfileComponent } from './component/profile/profile.component';
 import { HomeComponent } from './component/home/home.component';
 import { NavbarComponent } from './component/navbar/navbar.component';
 import { StatsComponent } from './component/stats/stats.component';
 import { AuthInterceptor } from './interceptor/auth.interceptor';
+import { InvoicesComponent } from './component/invoices/invoices.component';
+import { NewInvoiceComponent } from './component/new-invoice/new-invoice.component';
+import { NewCustomerComponent } from './component/new-customer/new-customer.component';
+import { InvoiceComponent } from './component/invoice/invoice.component';
+import { ReportComponent } from './component/report/report.component';
 
 @NgModule({
   declarations: [
@@ -24,10 +30,16 @@ import { AuthInterceptor } from './interceptor/auth.interceptor';
     VerifyComponent,
     ResetPasswordComponent,
     CustomersComponent,
+    CustomerComponent,
     ProfileComponent,
     HomeComponent,
     NavbarComponent,
-    StatsComponent
+    StatsComponent,
+    InvoicesComponent,
+    NewInvoiceComponent,
+    NewCustomerComponent,
+    InvoiceComponent,
+    ReportComponent
   ],
   imports: [
     BrowserModule,

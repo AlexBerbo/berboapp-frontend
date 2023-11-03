@@ -6,8 +6,14 @@ import { ResetPasswordComponent } from './component/reset-password/reset-passwor
 import { VerifyComponent } from './component/verify/verify.component';
 import { HomeComponent } from './component/home/home.component';
 import { ProfileComponent } from './component/profile/profile.component';
-import { CustomersComponent } from './component/customer/customer.component';
+import { CustomersComponent } from './component/customers/customers.component';
 import { AuthenticationGuard } from './guard/authentication.guard';
+import { NewCustomerComponent } from './component/new-customer/new-customer.component';
+import { CustomerComponent } from './component/customer/customer.component';
+import { InvoicesComponent } from './component/invoices/invoices.component';
+import { NewInvoiceComponent } from './component/new-invoice/new-invoice.component';
+import { InvoiceComponent } from './component/invoice/invoice.component';
+import { ReportComponent } from './component/report/report.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -17,6 +23,12 @@ const routes: Routes = [
   { path: 'user/verify/password/:key', component: VerifyComponent },
   { path: 'profile', component: ProfileComponent, canActivate: [AuthenticationGuard] },
   { path: 'customers', component: CustomersComponent, canActivate: [AuthenticationGuard] },
+  { path: 'customer/new', component: NewCustomerComponent, canActivate: [AuthenticationGuard] },
+  { path: 'customer/:id', component: CustomerComponent, canActivate: [AuthenticationGuard] },
+  { path: 'invoices', component: InvoicesComponent, canActivate: [AuthenticationGuard] },
+  { path: 'invoice/new', component: NewInvoiceComponent, canActivate: [AuthenticationGuard] },
+  { path: 'invoices/:id/:invoiceNumber', component: InvoiceComponent, canActivate: [AuthenticationGuard] },
+  { path: 'report/:id', component: ReportComponent, canActivate: [AuthenticationGuard] },
   { path: '', component: HomeComponent, canActivate: [AuthenticationGuard] },
   { path: '', redirectTo: '/', pathMatch: 'full' },
   { path: '**', component: HomeComponent }
