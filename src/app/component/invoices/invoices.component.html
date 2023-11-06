@@ -50,7 +50,7 @@
                          <li [ngClass]="0 == (currentPage$ | async) ? 'disabled' : ''" class="page-item pointer">
                             <a (click)="goToNextPage(searchForm.value.name, 'backwards')" class="page-link">&laquo; Prev</a>
                          </li>
-                         <li *ngFor="let page of [].constructor(state?.appData?.data?.invoices.totalPages); let i = index" class="page-item pointer">
+                         <li *ngFor="let page of state?.appData?.data?.invoices.totalPages | extractValue: 'number'; let i = index" class="page-item pointer">
                             <a (click)="goToPage(searchForm.value.name, i)" [ngClass]="i == (currentPage$ | async) ? 'active' : ''" class="page-link">{{ i + 1 }}</a>
                          </li>
                          <li [ngClass]="(state?.appData?.data?.invoices.totalPages - 1) == (currentPage$ | async) ? 'disabled' : ''" class="page-item pointer">
