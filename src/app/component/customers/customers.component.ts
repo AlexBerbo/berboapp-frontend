@@ -1,3 +1,4 @@
+import { HttpEvent, HttpEventType } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -7,10 +8,9 @@ import { Role } from 'src/app/enum/role.enum';
 import { CustomHttpResponse, Page } from 'src/app/interface/custom-http-resposne';
 import { Customer } from 'src/app/interface/customer';
 import { State } from 'src/app/interface/state';
-import { Stats } from 'src/app/interface/stats';
 import { User } from 'src/app/interface/user';
 import { CustomerService } from 'src/app/service/customer.service';
-import { UserService } from 'src/app/service/user.service';
+import { saveAs } from 'file-saver';
 
 @Component({
   selector: 'app-customers',
@@ -26,6 +26,8 @@ export class CustomersComponent implements OnInit {
   showLogs$ = this.showLogsSubject.asObservable();
   private currentPageSubject = new BehaviorSubject<number>(0);
   currentPage$ = this.currentPageSubject.asObservable();
+  private fileStatusSubject = new BehaviorSubject<{ status: string, type: string, progress: number }>(undefined);
+  fileStatus$ = this.currentPageSubject.asObservable();
   readonly DataState = DataState;
   readonly Role = Role;
 
@@ -80,4 +82,36 @@ export class CustomersComponent implements OnInit {
   selectedCustomer(customer: Customer): void {
     this.router.navigate([`customer/${customer.id}`]);
   }
+
+  report(): void {
+    this.customerState$ = this.customerService.downloadReport$().pipe(
+      map(response => {
+        console.log(response);
+        this.reportProgress(response);
+        return { dataState: DataState.LOADED, appData: this.dataSubject.value }
+      }),
+      startWith({ dataState: DataState.LOADED, appData: this.dataSubject.value }),
+      catchError((error: string) => {
+        return of({ dataState: DataState.LOADED, error, appData: this.dataSubject.value })
+      })
+    )
+  }
+
+  private reportProgress(httpEvent: HttpEvent<string[] | Blob>): void {
+    switch(httpEvent.type) {
+      case HttpEventType.DownloadProgress || HttpEventType.UploadProgress:
+        this.fileStatusSubject.next({ status: 'progress', type: 'Downloading...', progress: Math.round(100 * (httpEvent.loaded / httpEvent.total))});
+        break;
+      case HttpEventType.ResponseHeader:
+        console.log('Reponse header: ', httpEvent);
+        break;
+      case HttpEventType.Response:
+        saveAs(new File([<Blob>httpEvent.body], httpEvent.headers.get('File-name'), { type: `${httpEvent.headers.get('Content-Type')};charset=utf-8` }))
+        this.fileStatusSubject.next(undefined);
+        break;
+      default:
+        console.log(httpEvent);
+        break;
+    }
+  } 
 }

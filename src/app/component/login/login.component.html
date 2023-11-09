@@ -65,10 +65,10 @@
               <form #verifyCodeForm="ngForm" (ngSubmit)="verifyCode(verifyCodeForm)">
                 <div class="form-outline mb-4">
                   <label class="form-label" for="code">Verirfication Code</label>
-                  <input [disabled]="state.dataState === DataState.LOADING" ngModel type="text" name="code" class="form-control" required>
+                  <input [disabled]="state.dataState === DataState.LOADING || state.dataState === DataState.ERROR" ngModel type="text" name="code" class="form-control" required>
                 </div>
                 <div class="d-flex justify-content-center mb-4">
-                  <button [disabled]="state.dataState === DataState.LOADING || verifyCodeForm.invalid || verifyCodeForm.pristine" type="submit" class="btn btn-primary">
+                  <button [disabled]="state.dataState === DataState.LOADING || state.dataState === DataState.ERROR || verifyCodeForm.invalid || verifyCodeForm.pristine" type="submit" class="btn btn-primary">
                     <span *ngIf="state.dataState === DataState.LOADING" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="margin-right: 5px;"></span>
                     <span *ngIf="state.dataState === DataState.LOADING">Loading...</span>
                     <span *ngIf="!(state.dataState === DataState.LOADING)">Verify Code</span>

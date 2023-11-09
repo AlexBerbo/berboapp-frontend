@@ -6,12 +6,14 @@ import { CustomHttpResponse } from '../interface/custom-http-resposne';
 import { Profile } from '../interface/profile';
 import { User } from '../interface/user';
 import { Key } from '../enum/key.enum';
+import { AccountType } from '../interface/appstate';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
-  constructor(private http: HttpClient) {}
+
+  constructor(private http: HttpClient) { }
 
   private server: string = 'http://localhost:8080';
   private jwtHelper = new JwtHelperService();
@@ -23,8 +25,36 @@ export class UserService {
         catchError(this.handleError)
       );
 
+  register$ = (user: User) => <Observable<CustomHttpResponse<Profile>>>
+    this.http.post<CustomHttpResponse<Profile>>(`${this.server}/user/register`, user)
+      .pipe(
+        tap(console.log),
+        catchError(this.handleError)
+      );
+
+  resetPassword$ = (form: { userId: number, newPassword: string, confirmNewPassword: string }) => <Observable<CustomHttpResponse<Profile>>>
+    this.http.put<CustomHttpResponse<Profile>>(`${this.server}/user/renew-password`, form)
+      .pipe(
+        tap(console.log),
+        catchError(this.handleError)
+      );
+
+  sendPasswordResetRequest$ = (email: string) => <Observable<CustomHttpResponse<Profile>>>
+    this.http.get<CustomHttpResponse<Profile>>(`${this.server}/user/reset-password/${email}`)
+      .pipe(
+        tap(console.log),
+        catchError(this.handleError)
+      );
+
   verifyCode$ = (email: string, code: string) => <Observable<CustomHttpResponse<Profile>>>
     this.http.get<CustomHttpResponse<Profile>>(`${this.server}/user/verify/code/${email}/${code}`)
+      .pipe(
+        tap(console.log),
+        catchError(this.handleError)
+      );
+
+  verify$ = (type: AccountType, key: string) => <Observable<CustomHttpResponse<Profile>>>
+    this.http.get<CustomHttpResponse<Profile>>(`${this.server}/user/verify/${type}/${key}`)
       .pipe(
         tap(console.log),
         catchError(this.handleError)
@@ -85,17 +115,17 @@ export class UserService {
         catchError(this.handleError)
       );
 
-      
+
   updateImage$ = (formData: FormData) => <Observable<CustomHttpResponse<Profile>>>
-  this.http.patch<CustomHttpResponse<Profile>>(`${this.server}/user/update-image`, formData)
-    .pipe(
-      tap(console.log),
-      catchError(this.handleError)
-    );
+    this.http.patch<CustomHttpResponse<Profile>>(`${this.server}/user/update-image`, formData)
+      .pipe(
+        tap(console.log),
+        catchError(this.handleError)
+      );
 
   isUserAuthenticated(): boolean {
-    return this.jwtHelper.decodeToken<string>(localStorage.getItem(Key.TOKEN)) && 
-    !this.jwtHelper.isTokenExpired(localStorage.getItem(Key.TOKEN)) ? true : false;
+    return this.jwtHelper.decodeToken<string>(localStorage.getItem(Key.TOKEN)) &&
+      !this.jwtHelper.isTokenExpired(localStorage.getItem(Key.TOKEN)) ? true : false;
   }
 
   logOut(): void {
@@ -112,7 +142,7 @@ export class UserService {
         errorMessage = error.error.reason;
         console.log(errorMessage);
       } else {
-        errorMessage = `An error occurred, error - ${error.status}`;
+        errorMessage = `An error occurred, error - ${error.error.message}`;
       }
     }
     return throwError(() => errorMessage);

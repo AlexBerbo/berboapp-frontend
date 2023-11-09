@@ -15,7 +15,7 @@ export class CacheInterceptor implements HttpInterceptor {
   constructor(private cacheService: CacheService) { }
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
-    if (request.url.includes('login') || request.url.includes('register') || request.url.includes('reset-password') || request.url.includes('refresh') || request.url.includes('verify')) {
+    if (request.url.includes('login') || request.url.includes('register') || request.url.includes('reset-password') || request.url.includes('renew-password') || request.url.includes('refresh') || request.url.includes('verify')) {
       return next.handle(request);
     }
     if(request.method !== 'GET' || request.url.includes('download')) {

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpEvent } from '@angular/common/http';
 import { Observable, catchError, tap, throwError } from 'rxjs';
 import { CustomHttpResponse, Page } from '../interface/custom-http-resposne';
 import { Customer } from '../interface/customer';
@@ -38,6 +38,14 @@ export class InvoiceService {
 
     getInvoice$ = (invoiceId: number) => <Observable<CustomHttpResponse<Customer & Invoice & User>>>
         this.http.get<CustomHttpResponse<Customer & Invoice & User>>(`${this.server}/invoice/get/${invoiceId}`)
+            .pipe(
+                tap(console.log),
+                catchError(this.handleError)
+            );
+
+    downloadReport$ = () => <Observable<HttpEvent<Blob>>>
+        this.http.get(`${this.server}/invoice/download/report`,
+            { reportProgress: true, observe: 'events', responseType: 'blob' })
             .pipe(
                 tap(console.log),
                 catchError(this.handleError)

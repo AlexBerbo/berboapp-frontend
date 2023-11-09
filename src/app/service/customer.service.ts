@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpEvent } from '@angular/common/http';
 import { Observable, catchError, tap, throwError } from 'rxjs';
 import { CustomHttpResponse, CustomerState, Page } from '../interface/custom-http-resposne';
 import { Customer } from '../interface/customer';
@@ -16,14 +16,14 @@ export class CustomerService {
   private server: string = 'http://localhost:8080';
 
   customers$ = (page: number = 0) => <Observable<CustomHttpResponse<Page<Customer> & User & Stats>>>
-    this.http.get<CustomHttpResponse<Page<Customer>  & User & Stats>>(`${this.server}/customer/list?page=${page}`)
+    this.http.get<CustomHttpResponse<Page<Customer> & User & Stats>>(`${this.server}/customer/list?page=${page}`)
       .pipe(
         tap(console.log),
         catchError(this.handleError)
       );
 
-  searchCustomer$ = (name: string = '', page: number = 0) => <Observable<CustomHttpResponse<Page<Customer>  & User>>>
-    this.http.get<CustomHttpResponse<Page<Customer>  & User>>(`${this.server}/customer/search?name=${name}&page=${page}`)
+  searchCustomer$ = (name: string = '', page: number = 0) => <Observable<CustomHttpResponse<Page<Customer> & User>>>
+    this.http.get<CustomHttpResponse<Page<Customer> & User>>(`${this.server}/customer/search?name=${name}&page=${page}`)
       .pipe(
         tap(console.log),
         catchError(this.handleError)
@@ -49,6 +49,15 @@ export class CustomerService {
         tap(console.log),
         catchError(this.handleError)
       );
+
+  downloadReport$ = () => <Observable<HttpEvent<Blob>>>
+    this.http.get(`${this.server}/customer/download/report`,
+      { reportProgress: true, observe: 'events', responseType: 'blob' })
+      .pipe(
+        tap(console.log),
+        catchError(this.handleError)
+      );
+
 
   handleError(error: HttpErrorResponse): Observable<never> {
     let errorMessage: string;
