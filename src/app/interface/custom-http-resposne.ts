@@ -1,3 +1,5 @@
+import { Customer } from "./customer";
+
 export interface CustomHttpResponse<T> {
     status: string;
     statusCode: number;
@@ -6,4 +8,13 @@ export interface CustomHttpResponse<T> {
     message: string;
     developerMessage?: string;
     data?: T
+}
+
+export interface Page {
+    content: Customer[];
+    totalPages: number,
+    totalElements: number;
+    numberOfElements: number;
+    size: number;
+    number: number;
 }

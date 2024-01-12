@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http'
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { JwtHelperService } from '@auth0/angular-jwt';
 import { Observable, catchError, tap, throwError } from 'rxjs';
 import { CustomHttpResponse } from '../interface/custom-http-resposne';
 import { Profile } from '../interface/profile';
@@ -10,9 +11,10 @@ import { Key } from '../enum/key.enum';
   providedIn: 'root'
 })
 export class UserService {
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   private server: string = 'http://localhost:8080';
+  private jwtHelper = new JwtHelperService();
 
   login$ = (email: string, password: string) => <Observable<CustomHttpResponse<Profile>>>
     this.http.post<CustomHttpResponse<Profile>>(`${this.server}/user/login`, { email, password })
@@ -90,6 +92,16 @@ export class UserService {
       tap(console.log),
       catchError(this.handleError)
     );
+
+  isUserAuthenticated(): boolean {
+    return this.jwtHelper.decodeToken<string>(localStorage.getItem(Key.TOKEN)) && 
+    !this.jwtHelper.isTokenExpired(localStorage.getItem(Key.TOKEN)) ? true : false;
+  }
+
+  logOut(): void {
+    localStorage.removeItem(Key.REFRESH_TOKEN);
+    localStorage.removeItem(Key.TOKEN);
+  }
 
   handleError(error: HttpErrorResponse): Observable<never> {
     let errorMessage: string;
