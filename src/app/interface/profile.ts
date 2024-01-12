@@ -5,7 +5,7 @@ import { User } from "./user";
 export interface Profile {
     user?: User;
     event?: Events[],
-    role?: Role[],
+    roles?: Role[],
     jwt_token?: string;
     refresh_token?: string; 
 }

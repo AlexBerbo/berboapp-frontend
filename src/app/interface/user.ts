@@ -11,7 +11,7 @@ export interface User {
     roleName: string;
     permissions: string;
     enabled: boolean;
-    isNotLocked: boolean;
+    notLocked: boolean;
     usingMfa: boolean;
     createdAt: Date;
 }
