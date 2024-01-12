@@ -5,9 +5,7 @@ import { CustomHttpResponse, EventState } from '../interface/custom-http-resposn
 import { Message } from '../interface/message';
 
 
-@Injectable({
-    providedIn: 'root'
-})
+@Injectable()
 export class ReportService {
     constructor(private http: HttpClient) { }
 
@@ -28,15 +26,16 @@ export class ReportService {
             );
 
     handleError(error: HttpErrorResponse): Observable<never> {
+        console.log(error);
         let errorMessage: string;
         if (error.error instanceof ErrorEvent) {
-            errorMessage = `An error occurred - ${error.error.message}`;
+            errorMessage = `A client error occurred - ${error.error.message}`;
         } else {
             if (error.error.reason) {
                 errorMessage = error.error.reason;
                 console.log(errorMessage);
             } else {
-                errorMessage = `An error occurred, error - ${error.status}`;
+                errorMessage = `An error occurred - Error status ${error.status}`;
             }
         }
         return throwError(() => errorMessage);
