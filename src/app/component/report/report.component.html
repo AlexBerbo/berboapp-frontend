@@ -1,0 +1,104 @@
+<ng-container *ngIf="(reportState$ | async) as state" [ngSwitch]="state.dataState">
+    <ng-container *ngSwitchCase="DataState.LOADED">
+        <app-navbar [user]="state?.appData?.data?.user"></app-navbar>
+        <section>
+            <div class="container">
+                <nav aria-label="breadcrumb" style="margin-top: 8px;">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a [routerLink]="['/']">Home</a>
+                        </li>
+                        <li class="breadcrumb-item"> <a [routerLink]="['/profile']">Profile</a> </li>
+                        <li class="breadcrumb-item active" aria-current="page">Report</li>
+                    </ol>
+                </nav>
+                <div class="row justify-content-center">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="text-center">
+                                    <h2><i style="margin-right: 5px;" class="bi bi-flag"></i> Report Activity
+                                    </h2>
+                                </div>
+                                <div *ngIf="state.error"
+                                    class="alert alert-danger bg-danger text-light border-0 alert-dismissible fade show"
+                                    role="alert">
+                                    {{ state.error }}
+                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"
+                                        aria-label="Close"></button>
+                                </div>
+                                <div *ngIf="state?.appData?.message"
+                                    class="alert alert-success bg-success text-light border-0 alert-dismissible fade show"
+                                    role="alert">
+                                    {{ state?.appData?.message }}
+                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"
+                                        aria-label="Close"></button>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6" style="margin-bottom: 15px;">
+                                        <div class="form-group">
+                                            <input type="text" [ngModel]="state?.appData?.data?.event?.id" name="id"
+                                                class="form-control" disabled hidden required>
+                                            <label>Description</label>
+                                            <input [ngModel]="state?.appData?.data?.event?.description"
+                                                name="description" class="form-control" disabled required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6" style="margin-bottom: 15px;">
+                                        <div class="form-group">
+                                            <label>IP Address</label>
+                                            <input type="text" [ngModel]="state?.appData?.data?.event?.ipAddress"
+                                                name="ipAddress" class="form-control" disabled required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6" style="margin-bottom: 15px;">
+                                        <div class="form-group">
+                                            <label for="address">Type</label>
+                                            <input type="text" [ngModel]="state?.appData?.data?.event?.type" name="type"
+                                                class="form-control" disabled required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6" style="margin-bottom: 15px;">
+                                        <div class="form-group">
+                                            <label>Device</label>
+                                            <input type="text" [ngModel]="state?.appData?.data?.event?.device"
+                                                name="device" class="form-control" disabled required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label>Date</label>
+                                            <input type="text"
+                                                [ngModel]="state?.appData?.data?.event?.createdAt | date: 'mediumDate'"
+                                                name="createdAt" class="form-control" disabled required>
+                                        </div>
+                                    </div>
+                                </div>
+                                <form #reportForm="ngForm" (submit)="report(reportForm)" class="mt-3">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label>Message</label>
+                                            <input type="text" ngModel name="content" class="form-control"
+                                                [disabled]="state.dataState === DataState.LOADING || (isLoading$ | async)"
+                                                required>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <button
+                                            [disabled]="state.dataState === DataState.LOADING || reportForm.invalid || (isLoading$ | async)"
+                                            type="submit" class="btn btn-danger mt-3">
+                                            <span *ngIf="isLoading$ | async" class="spinner-border spinner-border-sm"
+                                                role="status" aria-hidden="true" style="margin-right: 5px;"></span>
+                                            <span *ngIf="isLoading$ | async">Reporting...</span>
+                                            <span *ngIf="!(isLoading$ | async)">Report</span>
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </ng-container>
+</ng-container>

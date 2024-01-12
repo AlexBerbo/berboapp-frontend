@@ -1,0 +1,77 @@
+<ng-container *ngIf="(serviceState$ | async) as state" [ngSwitch]="state.dataState">
+    <ng-container *ngSwitchCase="DataState.LOADED">
+        <app-navbar [user]="state?.appData?.data?.user"></app-navbar>
+        <section>
+            <div class="container">
+                <nav aria-label="breadcrumb" style="margin-top: 8px;">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a [routerLink]="['/']">Home</a>
+                        </li>
+                        <li class="breadcrumb-item"> <a [routerLink]="['/services']">Services</a> </li>
+                        <li class="breadcrumb-item active" aria-current="page">New</li>
+                    </ol>
+                </nav>
+                <div class="row justify-content-center">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="text-center">
+                                    <h2><i style="margin-right: 5px;" class="bi bi-receipt"></i> New Service
+                                    </h2>
+                                </div>
+                                <div *ngIf="state.error"
+                                    class="alert alert-danger bg-danger text-light border-0 alert-dismissible fade show"
+                                    role="alert">
+                                    {{ state?.error }}
+                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"
+                                        aria-label="Close"></button>
+                                </div>
+                                <div *ngIf="state?.appData?.message"
+                                    class="alert alert-success bg-success text-light border-0 alert-dismissible fade show"
+                                    role="alert">
+                                    {{ state?.appData?.message }}
+                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"
+                                        aria-label="Close"></button>
+                                </div>
+ 
+                                <form #serviceForm="ngForm" (submit)="addService(serviceForm)">
+                                    <div class="row">
+                                        <div class="col-md-6" style="margin-bottom: 15px;">
+                                            <div class="form-group">
+                                                <label for="address">Name</label>
+                                                <input type="text" ngModel name="name" class="form-control" required>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6" style="margin-bottom: 15px;">
+                                            <div class="form-group">
+                                                <label>Price</label>
+                                                <input type="text" ngModel name="price" class="form-control" required>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6" style="margin-bottom: 15px;">
+                                            <div class="form-group">
+                                                <label>Fee</label>
+                                                <input type="text" ngModel name="fee" class="form-control" required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <button
+                                            [disabled]="state.dataState === DataState.LOADING || serviceForm.invalid || (isLoading$ | async)"
+                                            type="submit" class="btn btn-primary mt-5">
+                                            <span *ngIf="isLoading$ | async" class="spinner-border spinner-border-sm"
+                                                role="status" aria-hidden="true" style="margin-right: 5px;"></span>
+                                            <span *ngIf="isLoading$ | async">Saving...</span>
+                                            <span *ngIf="!(isLoading$ | async)">Save Service</span>
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </ng-container>
+</ng-container>
